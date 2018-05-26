@@ -1,0 +1,38 @@
+version: '2'
+
+volumes:
+  nextcloud:
+  db:
+
+services:
+  db:
+    image: mariadb #https://hub.docker.com/_/mariadb/
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_PASSWORD=nextcloud
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+
+  app:
+    image: wonderfall/nextcloud #https://hub.docker.com/r/wonderfall/nextcloud/
+    ports:
+      - 8888:8888
+    links:
+      - db
+    restart: always
+    environment:
+      - DB_TYPE=mysql
+      - DB_NAME=nextcloud
+      - DB_USER=nextcloud
+      - DB_PASSWORD=nextcloud
+      - DB_HOST=db
+      - ADMIN_USER = admin
+      - ADMIN_PASSWORD = adminadmin
+    volumes:
+      - ./data:/data
+      - ./config:/config
+      - ./apps:/apps2
+      - ./themes:/nextcloud/themes
